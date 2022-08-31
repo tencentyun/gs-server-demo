@@ -32,23 +32,19 @@ if (Config.configs[DefaultKeys.API_SIGN] == 'Y') {
       ClientSession: validSchema(validString, true),
       UserId: validSchema(validString, true),
       GameId: validSchema(validString, true),
-      RequestId: validSchema(validString, true),
       Sign: validSchema(validString, true),
     },
     '/StopGame': {
       UserId: validSchema(validString, true),
-      RequestId: validSchema(validString, true),
       Sign: validSchema(validString, true),
     },
     '/Enqueue': {
       UserId: validSchema(validString, true),
       GameId: validSchema(validString, true),
-      RequestId: validSchema(validString, true),
       Sign: validSchema(validString, true),
     },
     '/Dequeue': {
       UserId: validSchema(validString, true),
-      RequestId: validSchema(validString, true),
       Sign: validSchema(validString, true),
     },
     onFailed: onMissParams
@@ -59,20 +55,16 @@ if (Config.configs[DefaultKeys.API_SIGN] == 'Y') {
       ClientSession: validSchema(validString, true),
       UserId: validSchema(validString, true),
       GameId: validSchema(validString, true),
-      RequestId: validSchema(validString, true),
     },
     '/StopGame': {
       UserId: validSchema(validString, true),
-      RequestId: validSchema(validString, true),
     },
     '/Enqueue': {
       UserId: validSchema(validString, true),
       GameId: validSchema(validString, true),
-      RequestId: validSchema(validString, true),
     },
     '/Dequeue': {
       UserId: validSchema(validString, true),
-      RequestId: validSchema(validString, true),
     },
     onFailed: onMissParams
   };

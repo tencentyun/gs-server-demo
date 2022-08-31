@@ -45,7 +45,7 @@
 
 配置项输入完成后会自动启动服务，控制台如输出 gs-server-demo@0.0.0 start 则表示启动成功
 
-默认请求地址为 <http://ip:9000/xxx>
+默认请求地址为 <http://ip:3000/xxx>
 
 后续需要启动服务也可以在命令行下输入
 
@@ -76,13 +76,13 @@ chmod 777 build.sh && ./build.sh
 免环境变量启动：
 
 ```bash
-docker run -d -p9000:9000 demo
+docker run -d -p3000:3000 demo
 ```
 
 使用环境变量输入参数（如已生成 config.json, 不需要再设置环境变量）：
 
 ```bash
-docker run -d -p9000:9000 -e SECRET_KEY=xxx -e SECRET_ID=yyy -e SALT=zzz demo
+docker run -d -p3000:3000 -e SECRET_KEY=xxx -e SECRET_ID=yyy -e SALT=zzz demo
 ```
 
 支持的环境变量如下：
@@ -101,11 +101,11 @@ docker run -d -p9000:9000 -e SECRET_KEY=xxx -e SECRET_ID=yyy -e SALT=zzz demo
 
 - 请求方法：HTTP POST
 - 数据类型：JSON
-- 默认请求端口 9000，如需改为其他端口，修改 bin/www 里面的端口值并重启服务即可
+- 默认请求端口 3000，如需改为其他端口，修改 bin/www 里面的端口值并重启服务即可
 - 控制台请求服务示例：
 
 ```bash
-curl -X POST --data "ClientSession=xxx&RequestId=req123&UserId=userid123&GameId=game-xxx&Sign=xxxx" http://127.0.0.1:9000/StartGame
+curl -X POST --data "ClientSession=xxx&RequestId=req123&UserId=userid123&GameId=game-xxx&Sign=xxxx" http://127.0.0.1:3000/StartGame
 ```
 
 ## 接口文档
@@ -120,10 +120,10 @@ curl -X POST --data "ClientSession=xxx&RequestId=req123&UserId=userid123&GameId=
 
 | 字段          | 类型   | 必要           | 描述                                                                                                  |
 | ------------- | ------ | -------------- | ----------------------------------------------------------------------------------------------------- |
-| UserId        | string | 是             | 用户 ID，业务自定义生成                                                                               |
+| UserId        | string | 是             | 用户 ID，业务自定义生成，不同用户需要生成不同 UserId 来区分                                           |
 | GameId        | string | 是             | 游戏 ID，格式为 game-xxx                                                                              |
 | ClientSession | string | 是             | 客户端会话描述                                                                                        |
-| RequestId     | string | 是             | 请求 ID，业务自定义生成                                                                               |
+| RequestId     | string | 否             | 请求 ID，业务自定义生成，业务自定义生成，可用于业务区分不同请求                                       |
 | Sign          | string | 开启校验则必要 | 请求校验参数<br>计算方式：SHA256(字段名排序后取字段值，并拼接成字符串，最后再拼接上签名混淆密钥 SALT) |
 
 - 响应
@@ -132,7 +132,7 @@ curl -X POST --data "ClientSession=xxx&RequestId=req123&UserId=userid123&GameId=
 | --------------- | ------ | --------------- |
 | Code            | number | 返回码          |
 | Msg             | string | 描述信息        |
-| RequestId       | string | 请求 ID         |
+| RequestId       | string | 业务请求 ID     |
 | SessionDescribe | object | webrtc 会话信息 |
 
 - SessionDescribe 结构
@@ -141,7 +141,7 @@ curl -X POST --data "ClientSession=xxx&RequestId=req123&UserId=userid123&GameId=
 | ------------- | ------ | -------------------------- |
 | ServerSession | string | 服务端会话                 |
 | Role          | string | 玩家角色，Player 或 Viewer |
-| RequestId     | string | 云游戏服务请求 ID          |
+| RequestId     | string | 云游戏服务云 API 请求 ID   |
 
 ### 2. 结束游戏
 
@@ -153,17 +153,17 @@ curl -X POST --data "ClientSession=xxx&RequestId=req123&UserId=userid123&GameId=
 
 | 字段      | 类型   | 必要           | 描述                                                                                                  |
 | --------- | ------ | -------------- | ----------------------------------------------------------------------------------------------------- |
-| UserId    | string | 是             | 用户 ID，业务自定义生成                                                                               |
-| RequestId | string | 是             | 请求 ID，业务自定义生成                                                                               |
+| UserId    | string | 是             | 用户 ID，业务自定义生成，不同用户需要生成不同 UserId 来区分                                           |
+| RequestId | string | 否             | 请求 ID，业务自定义生成，业务自定义生成，可用于业务区分不同请求                                       |
 | Sign      | string | 开启校验则必要 | 请求校验参数<br>计算方式：SHA256(字段名排序后取字段值，并拼接成字符串，最后再拼接上签名混淆密钥 SALT) |
 
 - 响应
 
-| 字段      | 类型   | 描述     |
-| --------- | ------ | -------- |
-| Code      | number | 返回码   |
-| Msg       | string | 描述信息 |
-| RequestId | string | 请求 ID  |
+| 字段      | 类型   | 描述        |
+| --------- | ------ | ----------- |
+| Code      | number | 返回码      |
+| Msg       | string | 描述信息    |
+| RequestId | string | 业务请求 ID |
 
 ### 3. 用户加入队列
 
@@ -175,19 +175,19 @@ curl -X POST --data "ClientSession=xxx&RequestId=req123&UserId=userid123&GameId=
 
 | 字段      | 类型   | 必要           | 描述                                                                                                  |
 | --------- | ------ | -------------- | ----------------------------------------------------------------------------------------------------- |
-| UserId    | string | 是             | 用户 ID，业务自定义生成                                                                               |
+| UserId    | string | 是             | 用户 ID，业务自定义生成，不同用户需要生成不同 UserId 来区分                                           |
 | GameId    | string | 是             | 游戏 ID，格式为 game-xxx                                                                              |
-| RequestId | string | 是             | 请求 ID，业务自定义生成                                                                               |
+| RequestId | string | 否             | 请求 ID，业务自定义生成，业务自定义生成，可用于业务区分不同请求                                       |
 | Sign      | string | 开启校验则必要 | 请求校验参数<br>计算方式：SHA256(字段名排序后取字段值，并拼接成字符串，最后再拼接上签名混淆密钥 SALT) |
 
 - 响应
 
-| 字段      | 类型   | 描述     |
-| --------- | ------ | -------- |
-| Code      | number | 返回码   |
-| Msg       | string | 描述信息 |
-| RequestId | string | 请求 ID  |
-| Data      | object | 队列消息 |
+| 字段      | 类型   | 描述        |
+| --------- | ------ | ----------- |
+| Code      | number | 返回码      |
+| Msg       | string | 描述信息    |
+| RequestId | string | 业务请求 ID |
+| Data      | object | 队列消息    |
 
 - Data 结构
   
@@ -207,17 +207,17 @@ curl -X POST --data "ClientSession=xxx&RequestId=req123&UserId=userid123&GameId=
 
 | 字段      | 类型   | 必要           | 描述                                                                                                  |
 | --------- | ------ | -------------- | ----------------------------------------------------------------------------------------------------- |
-| UserId    | string | 是             | 用户 ID，业务自定义生成                                                                               |
-| RequestId | string | 是             | 请求 ID，业务自定义生成                                                                               |
+| UserId    | string | 是             | 用户 ID，业务自定义生成，不同用户需要生成不同 UserId 来区分                                           |
+| RequestId | string | 否             | 请求 ID，业务自定义生成，业务自定义生成，可用于业务区分不同请求                                       |
 | Sign      | string | 开启校验则必要 | 请求校验参数<br>计算方式：SHA256(字段名排序后取字段值，并拼接成字符串，最后再拼接上签名混淆密钥 SALT) |
 
 - 响应
 
-| 字段      | 类型   | 描述     |
-| --------- | ------ | -------- |
-| Code      | number | 返回码   |
-| Msg       | string | 描述信息 |
-| RequestId | string | 请求 ID  |
+| 字段      | 类型   | 描述        |
+| --------- | ------ | ----------- |
+| Code      | number | 返回码      |
+| Msg       | string | 描述信息    |
+| RequestId | string | 业务请求 ID |
 
 ## 错误码定义
 
