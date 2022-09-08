@@ -76,13 +76,13 @@ chmod 777 build.sh && ./build.sh
 免环境变量启动：
 
 ```bash
-docker run -d -p3000:3000 demo
+docker run -d -p3000:3000 cgserver
 ```
 
 使用环境变量输入参数（如已生成 config.json, 不需要再设置环境变量）：
 
 ```bash
-docker run -d -p3000:3000 -e SECRET_KEY=xxx -e SECRET_ID=yyy -e SALT=zzz demo
+docker run -d -p3000:3000 -e SECRET_KEY=xxx -e SECRET_ID=yyy -e SALT=zzz cgserver
 ```
 
 支持的环境变量如下：
