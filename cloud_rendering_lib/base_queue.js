@@ -42,7 +42,6 @@ class BaseQueue {
   }
 
   checkQueue() {
-    LOG.warn('BaseQueue');
   }
 
   addCallback(key, cb) {

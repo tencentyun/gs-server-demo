@@ -14,9 +14,12 @@ const {
   simpleRespone,
   onMissParams } = require('../cloud_rendering_lib/com');
 const { verifySign } = require('../cloud_rendering_lib/sign');
+const { createRedisConnection } = require('../cloud_rendering_lib/redis');
 const { Config, DefaultKeys } = require('../cloud_rendering_lib/config');
 const RequestConstraint = require('../cloud_rendering_lib/constraint');
+const BaseQueue = require('../cloud_rendering_lib/base_queue');
 const MemQueue = require('../cloud_rendering_lib/mem_queue');
+const RedisQueue = require('../cloud_rendering_lib/redis_queue');
 const LOG = require('../cloud_rendering_lib/log');
 
 let apiParamsSchema = {};
@@ -24,7 +27,14 @@ const waitQueue = {};
 const enqueueTimeout = 30000;   // ms
 const queueCheckInterval = 1000; // ms
 const noIdleMsg = 'ResourceNotFound.NoIdle';
-const queue = new MemQueue(queueCheckInterval);
+
+queue = new BaseQueue(queueCheckInterval)
+if (Config.configs[DefaultKeys.REDIS_QUEUE] == 'Y') {
+  createRedisConnection();
+  queue = new RedisQueue("WaitQueue", queueCheckInterval);
+} else {
+  queue = new MemQueue(queueCheckInterval);
+}
 
 if (Config.configs[DefaultKeys.API_SIGN] == 'Y') {
   apiParamsSchema = {

@@ -63,6 +63,7 @@ Config.registerModule(__filename, {
         sign: {
           type: 'string',
           description: '是否开启请求校验参数（Y/N），不填默认不开启',
+          pattern: /^[YN]?$/,
           required: true,
           default: 'N'
         },

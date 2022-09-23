@@ -5,6 +5,7 @@ const CONF_KEYS = {
   SECRET_ID: 'secret_id',     // 腾讯云 SecretId
   SECRET_KEY: 'secret_key',   // 腾讯云 SecretKey
   API_SIGN: 'api_sign',       // 是否开启 sign 校验参数
+  REDIS_QUEUE: 'redis_queue', // 是否开启 redis 队列存储方式
   FILE_PATH: './config.json', // 配置文件名
 };
 
@@ -51,7 +52,6 @@ class AppConfig {
   }
 
   async runInstall() {
-    console.info('正在进行初始化配置······');
     prompt.start();
     prompt.message = '';
     for (const k in this.modules) {
