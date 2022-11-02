@@ -28,7 +28,7 @@ const enqueueTimeout = 30000;   // ms
 const queueCheckInterval = 1000; // ms
 const noIdleMsg = 'ResourceNotFound.NoIdle';
 
-queue = new BaseQueue(queueCheckInterval)
+queue = new BaseQueue(queueCheckInterval);
 if (Config.configs[DefaultKeys.REDIS_QUEUE] == 'Y') {
   createRedisConnection();
   queue = new RedisQueue("WaitQueue", queueCheckInterval);

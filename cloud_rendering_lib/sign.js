@@ -73,7 +73,6 @@ const verifySign = (req, res, next) => {
   } else {
     next();
   }
-
 };
 
 module.exports = {
