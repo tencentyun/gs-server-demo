@@ -208,7 +208,7 @@ router.post('/Enqueue', verifyReqParams, verifySign, async (req, res, next) => {
     waitQueue[UserId].GameId = GameId;
     waitQueue[UserId].GroupId = GroupId;
     LOG.debug(`${UserId} update timestamp`);
-    return response(waitQueue[UserId], queue.indexOf(UserId));
+    return response(waitQueue[UserId], await queue.indexOf(UserId));
   }
 
   const newUser = {
@@ -234,7 +234,7 @@ router.post('/Enqueue', verifyReqParams, verifySign, async (req, res, next) => {
   waitQueue[UserId] = newUser;
   LOG.debug(`new user ${UserId} queuing`);
 
-  return response(newUser, queue.indexOf(UserId));
+  return response(newUser, await queue.indexOf(UserId));
 });
 
 router.post('/Dequeue', verifyReqParams, verifySign, async (req, res, next) => {
